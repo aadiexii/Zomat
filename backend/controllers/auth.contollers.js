@@ -24,7 +24,7 @@ export const signup =async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
-        user = await User.create({
+        const newUser = await User.create({
             fullName,
             email, 
             password: hashedPassword,
@@ -32,7 +32,7 @@ export const signup =async (req, res) => {
             role
         })
 
-        const token = await generateToken(user._id)
+        const token = await generateToken(newUser._id)
         res.cookie("token", token, {
             secure: false,
             sameSite: "strict",
@@ -40,7 +40,7 @@ export const signup =async (req, res) => {
             httpOnly: true
         })
 
-        return res.status(201).json(user)
+        return res.status(201).json(newUser)
     } catch (error) {
         return res.status(500).json({
             message: "Sign Up Error"
