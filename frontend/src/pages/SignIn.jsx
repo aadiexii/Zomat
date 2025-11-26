@@ -28,7 +28,7 @@ const SignIn = () => {
     <div className='min-h-screen w-full bg-bgColor flex items-center justify-center p-4'>
         <div className='bg-white rounded-xl shadow-lg w-full max-w-md p-8 border-2 border-borderColor'>
             <h1 className='text-4xl italic font-bold tracking-tight text-primaryColor mb-2 text-center'>Zomat</h1>
-            <p className='text-gray-600 mb-8 text-center'>Create your account to enjoy delicious food delivered to your door.</p>
+            <p className='text-gray-600 mb-8 text-center'>Log in and continue enjoying delicious meals at your doorstep.</p>
 
             {/* email */}
             <div className='mb-4'>
@@ -45,7 +45,10 @@ const SignIn = () => {
 
             {/* password */}
             <div className='mb-4'>
-                <label htmlFor='password' className='text-gray-700 font-medium mb-1'>Password</label>
+                <div className='flex justify-between'>
+                   <label htmlFor='password' className='text-gray-700 font-medium mb-1'>Password</label>
+                   <span className='text-primaryColor underline cursor-pointer' onClick={() => {navigate('/forgot-password')}}>Forgot Password</span>
+                </div>
                 <div className='relative'>
                     <input 
                         className='w-full border border-borderColor rounded-lg px-3 py-2 focus:outline-none focus:border-orange-500'
@@ -60,7 +63,8 @@ const SignIn = () => {
             </div>  
 
             {/* SignUp Button */}
-            <button className={`w-full font-semibold py-2 rounded-lg bg-primaryColor text-white cursor-pointer hover:bg-hoverColor`} onClick={handleSignIn}>Sign In</button>
+            <button className={`mb-5 w-full font-semibold py-2 rounded-lg bg-primaryColor text-white cursor-pointer hover:bg-hoverColor`} onClick={handleSignIn}>Sign In</button>
+
 
             {/* or section */}
             <div className='w-full flex items-center mt-4'>
