@@ -119,6 +119,7 @@ export const sendOtp = async (req, res) => {
 
         await sendOtpMail(email, otp)
         return res.status(200).json({
+            success: true,
             message: "OTP sent succesfully"
         })
     } catch (error) {
@@ -145,6 +146,7 @@ export const verifyOtp = async(req, res) => {
         //We are doing the user.save() because Updating a document in JS does NOT automatically update it in MongoDB.
         await user.save()
         return res.status(200).json({
+            success: true,
             message: "OTP verified succesfully"
         })
     } catch (error) {
@@ -177,5 +179,33 @@ export const resetPassword = async (req, res)=> {
         res.status(500).json({
             message: `OTP verify Error ${error}`
         })         
+    }
+}
+
+//The Controller is used for both signIn and signUp from google
+export const googleAuth = async (req, res) => {
+    try {
+        const {fullName, email, mobileNo, role} = req.body;
+
+        let user = await User.findOne({email})
+        if(!user){
+            user = await User.create({
+                fullName, email, mobileNo, role
+            })
+        }
+
+        const token = await generateToken(user._id)
+        res.cookie("token", token, {
+            secure: false,
+            sameSite: "strict",
+            maxAge: 7*24*60*60*1000,
+            httpOnly: true
+        })
+        
+        return res.status(200).json(user)  
+    } catch (error) {
+        return res.status(500).json({
+            message: "Google Auth Error"
+        })   
     }
 }

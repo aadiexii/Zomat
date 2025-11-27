@@ -5,6 +5,9 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import { serverUrl } from '../App';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../../firebase';
+import { ClipLoader } from "react-spinners";
 
 
 const SignUp = () => {
@@ -14,10 +17,13 @@ const SignUp = () => {
       const [email, setEmail] = useState("")
       const [password, setPassword] = useState("")
       const [mobileNo, setmobileNo] = useState("")
+      const [loading, setLoading] = useState(false)
+      const [err, setErr] = useState("")
       
       const navigate = useNavigate()
  
     const handleSignUp = async () => {
+        setLoading(true)
         try {
             const result = await axios.post(`${serverUrl}/api/auth/signup`, {
                 fullName,
@@ -27,10 +33,34 @@ const SignUp = () => {
                 role
             }, {withCredentials: true})
                console.log(result.data)
+               setErr("")
+               setLoading(false)
         } catch (error) {
-               console.log(error)
+            setLoading(false)
+            setErr(error?.response?.data?.message)
         }
     } 
+
+    const handleGoogleAuth = async () => {
+        if(!mobileNo){
+            setErr("Mobile No is Required");
+        }
+        const provider = new GoogleAuthProvider()
+        const result = await signInWithPopup(auth, provider)
+        
+        try {
+            const {data} = await axios.post(`${serverUrl}/api/auth/google-auth`, {
+                fullName: result.user.displayName,
+                email: result.user.email,
+                role,
+                mobileNo
+            }, {withCredentials: true})
+            console.log(data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
       return (
     <div className='min-h-screen w-full bg-bgColor flex items-center justify-center p-4'>
         <div className='bg-white rounded-xl shadow-lg w-full max-w-md p-8 border-2 border-borderColor'>
@@ -46,6 +76,7 @@ const SignUp = () => {
                    type='text'
                    placeholder='enter your full name'
                    value={fullName}
+                   required
                    onChange={(e) => setfullName(e.target.value)}
                 />
             </div>
@@ -59,6 +90,7 @@ const SignUp = () => {
                    type='email'
                    placeholder='enter your email'
                    value={email}
+                   required
                    onChange={(e) => setEmail(e.target.value)}
                 />
             </div>
@@ -72,6 +104,7 @@ const SignUp = () => {
                     type='email'
                     placeholder='enter your mobile num'
                     value={mobileNo}
+                    required
                     onChange={(e) => setmobileNo(e.target.value)}                    
                 />
             </div>  
@@ -86,6 +119,7 @@ const SignUp = () => {
                         type={showPassword ? 'text': 'password'}
                         placeholder='enter your password'
                         value={password}
+                        required
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <button className='absolute right-3 top-3 text-gray-500 cursor-pointer' onClick={() => setshowPassword(prev => !prev)}>{!showPassword? <FaEye />: <FaEyeSlash />}</button>
@@ -105,8 +139,13 @@ const SignUp = () => {
             </div>  
 
             {/* SignUp Button */}
-            <button className={`w-full font-semibold py-2 rounded-lg bg-primaryColor text-white cursor-pointer hover:bg-hoverColor`} onClick={handleSignUp}>Sign Up</button>
+            <button className={`w-full font-semibold py-2 rounded-lg bg-primaryColor text-white cursor-pointer hover:bg-hoverColor`} onClick={handleSignUp} disabled={loading}>
+                {loading? <ClipLoader size={20} color='white'/>: "Sign Up"}
+            </button>
 
+            {/* Error Display */}
+            {err && <p className='text-red-500 text-center my-2'>*{err}</p>}
+            
             {/* or section */}
             <div className='w-full flex items-center mt-4'>
                 <div className='grow h-px bg-gray-300'></div>
@@ -115,7 +154,7 @@ const SignUp = () => {
             </div>
 
             {/* SignUp with google */}
-            <button className='w-full gap-2 flex items-center justify-center mt-4 border rounded-lg py-2 border-gray-300 cursor-pointer transition duration-200 hover:bg-gray-100'><FcGoogle className='text-2xl'/><span>Continue with Google</span></button>
+            <button className='w-full gap-2 flex items-center justify-center mt-4 border rounded-lg py-2 border-gray-300 cursor-pointer transition duration-200 hover:bg-gray-100' onClick={handleGoogleAuth}><FcGoogle className='text-2xl'/><span>Continue with Google</span></button>
 
             {/* Already Account */}
             <p className='text-center mt-6'>Already have an account ? <span className='text-primaryColor underline cursor-pointer' onClick={() => {navigate('/signin')}}>Sign In</span></p>
