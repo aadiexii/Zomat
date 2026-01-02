@@ -8,6 +8,8 @@ import { serverUrl } from '../App';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { ClipLoader } from "react-spinners";
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../redux/userSlice';
 
 const SignIn = () => {
       const [showPassword, setshowPassword] = useState(false)
@@ -15,6 +17,7 @@ const SignIn = () => {
       const [password, setPassword] = useState("")
       const [loading, setLoading] = useState(false)
       const [err, setErr] = useState("")
+      const dispatch = useDispatch()
       
       const navigate = useNavigate()
  
@@ -25,7 +28,7 @@ const SignIn = () => {
                 email,
                 password,
             }, {withCredentials: true})
-               console.log(result.data)
+               dispatch(setUserData(result.data))
                setLoading(false)
                setErr("")
         } catch (error) {
@@ -39,10 +42,10 @@ const SignIn = () => {
         const result = await signInWithPopup(auth, provider)
         
         try {
-            const {data} = await axios.post(`${serverUrl}/api/auth/google-auth`, {
+            const result = await axios.post(`${serverUrl}/api/auth/google-auth`, {
                 email: result.user.email,
             }, {withCredentials: true})
-            console.log(data)
+            dispatch(setUserData(result.data))
         } catch (error) {
                console.log(error)
         }
