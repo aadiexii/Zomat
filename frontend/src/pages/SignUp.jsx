@@ -49,12 +49,12 @@ const SignUp = () => {
             setErr("Mobile No is Required");
         }
         const provider = new GoogleAuthProvider()
-        const result = await signInWithPopup(auth, provider)
+        const authResult = await signInWithPopup(auth, provider)
         
         try {
             const result = await axios.post(`${serverUrl}/api/auth/google-auth`, {
-                fullName: result.user.displayName,
-                email: result.user.email,
+                fullName: authResult.user.displayName,
+                email: authResult.user.email,
                 role,
                 mobileNo
             }, {withCredentials: true})
