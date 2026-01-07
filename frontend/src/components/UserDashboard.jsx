@@ -8,7 +8,7 @@ const UserDashboard = () => {
 const {userData} = useSelector(state => state.user) 
 const [showInfo, setShowInfo] = useState(false)
 const [showSearch, setShowSearch] = useState(false)
-
+const [showProfile, setShowProfile] = useState(false)
   return (
     <div className='w-full h-20 flex justify-between items-center text-black md:justify-center gap-[30px] px-5 fixed top-0 z-9999 bg-bgColor overflow-hidden'>
 
