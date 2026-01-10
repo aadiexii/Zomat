@@ -3,12 +3,15 @@ import { HiLocationMarker } from "react-icons/hi";
 import { IoMdSearch } from "react-icons/io";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import {useSelector} from 'react-redux'
+import { RxCross2 } from "react-icons/rx";
+import useGetCity from '../hooks/useGetCity';
+
 
 const UserDashboard = () => {
 const {userData} = useSelector(state => state.user) 
 const [showInfo, setShowInfo] = useState(false)
 const [showSearch, setShowSearch] = useState(false)
-const [showProfile, setShowProfile] = useState(false)
+
   return (
     <div className='w-full h-20 flex justify-between items-center text-black md:justify-center gap-[30px] px-5 fixed top-0 z-9999 bg-bgColor overflow-hidden'>
 
@@ -17,7 +20,7 @@ const [showProfile, setShowProfile] = useState(false)
            <HiLocationMarker size={25} className='text-primaryColor'/>
            <div className='w-[60%] truncate text-gray-600'>Belaon, Bihar</div>
         </div>
-        <div className='flex items-center w-[80%]'>
+        <div className='flex items-center w-[80%]'> 
             <IoMdSearch size={25} className='text-primaryColor'/>
             <input type="text" placeholder='Search for food' className='px-2.5 text-gray-700 outline-0 w-full'/>
         </div>
@@ -35,7 +38,7 @@ const [showProfile, setShowProfile] = useState(false)
         </div>
       </div>
       <div className='flex items-center gap-6'>
-      <IoMdSearch size={25} className='text-primaryColor md:hidden cursor-pointer' onClick={() => setShowSearch(prev => !prev)}/>
+      {showSearch? <RxCross2 size={25} className='text-primaryColor md:hidden cursor-pointer' onClick={() => setShowSearch(prev => !prev)}/>: <IoMdSearch size={25} className='text-primaryColor md:hidden cursor-pointer' onClick={() => setShowSearch(prev => !prev)}/>}
         <div className='relative cursor-pointer'>
             <MdOutlineShoppingCart size={25} className='text-primaryColor'/>
             <span className='absolute -top-3 -right-1 text-primaryColor'>0</span>
